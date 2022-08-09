@@ -326,6 +326,9 @@ pre { width: 52.5%; //, pre code, p pre code are both selectors in tufte.css - t
 span.newthought { font-variant: small-caps;
                   font-size: 1.2em;
                   letter-spacing: 0.05rem; }
+            
+span.rubrics { color: #ff0000;
+               font-weight: 600; }
 
 input.margin-toggle { display: none; }
 

@@ -1,14 +1,14 @@
 baseurl: /tufte-jekyll
-title: Tufte-Jekyll
-subtitle: Content-centric blogging
-author: clay harmon
+title: Vesperale
+subtitle: Laudate Dominum
+author: Societas Sancti Gregorii Magni
 simple_search: http://google.com/search
-description: A Jekyll theme for content-rich sites
+description: A site for publishing Gregorian notations for Vespers gatherings of the Society of Saint Gregory the Great
 name: tufte
 markdown: kramdown
 markdown_ext: "markdown,mkdown,mkdn,mkd,md"
-permalink: /articles/:short_year/:title
-timezone: America/New_York
+permalink: /vesperas/:year/:title
+timezone: Europe/Helsinki
 excerpt_separator: <!--more-->  # you can specify your own separator, of course.
 exclude: ['Gemfile', 'Gemfile.lock', 'Rakefile', 'UploadToGithub.Rakefile', 'README.md']
 post:

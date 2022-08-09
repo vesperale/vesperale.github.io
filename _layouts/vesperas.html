@@ -1,0 +1,283 @@
+---
+layout: default
+gabcfont: true
+---
+<h1>{{ page.title}}</h1>
+<h3><em>{{ page.latinTitle}}</em></h3>
+<p class="subtitle">{{ page.date | date: "%B %-d, %Y" }}</p>
+
+
+<h2>Incipit</h2>
+<p id="incipit">
+  Loading...
+</p>
+
+<h2>First Antiphon</h2>
+<p id="first-antiphon">
+  Loading...
+</p>
+<h3>Psalm {{ page.firstPsalmNo }}</h3>
+<p id="first-psalm">
+  Loading...
+</p>
+
+<h2>Second Antiphon</h2>
+<p id="second-antiphon">
+  Loading...
+</p>
+<h3>Psalm {{ page.secondPsalmNo }}</h3>
+<p id="second-psalm">
+  Loading...
+</p>
+
+<h2>Third Antiphon</h2>
+<p id="third-antiphon">
+  Loading...
+</p>
+<h3>Psalm {{ page.thirdPsalmNo }}</h3>
+<p id="third-psalm">
+  Loading...
+</p>
+
+<h2>Fourth Antiphon</h2>
+<p id="fourth-antiphon">
+  Loading...
+</p>
+<h3>Psalm {{ page.fourthPsalmNo }}</h3>
+<p id="fourth-psalm">
+  Loading...
+</p>
+
+<h2>Fifth Antiphon</h2>
+<p id="fifth-antiphon">
+  Loading...
+</p>
+<h3>Psalm {{ page.fifthPsalmNo }}</h3>
+<p id="fifth-psalm">
+  Loading...
+</p>
+
+<h2>Chapter</h2>
+<p id="chapter">
+  Loading...
+</p>
+
+<h2>Hymn</h2>
+<p id="hymn">
+  Loading...
+</p>
+<p>
+  <span class="rubrics">℣.</span> {{ page.hymnVer }}<br/>
+  <span class="rubrics">℟.</span> {{ page.hymnRes }}
+</p>
+
+<h2>Magnificat Antiphon</h2>
+<p id="magnificat-antiphon">
+  Loading...
+</p>
+<h3>Canticle of Our Lady</h3>
+<p id="magnificat">
+  Loading...
+</p>
+
+<h2>Collect</h2>
+<p id="collect">
+
+</p>
+<p>
+  <strong>Orémus.</strong><br/>
+  {{ page.collect }}<br/>
+  <span><span class="rubrics">℟.</span> Amen.</span>
+</p>
+
+<h2>Conclusion</h2>
+<p id="conclusio">
+  Loading...
+</p>
+<p>
+  <span><span class="rubrics">℣.</span> Fidélium ánimæ per misericórdiam Dei requiéscant in pace.</span><br/>
+  <span><span class="rubrics">℟.</span> Amen.</span>
+</p>
+
+<script type="text/javascript" src="https://ex.surge.sh/exsurge.min.js"></script>
+<script type="text/javascript">
+  /* exsurge configs */
+  let gabcInit = false;
+  let chants = [];
+  let incipit;
+  let firstAnt;
+
+  class GABC {
+    constructor(gabc, annotation, sideText, containerRef) {
+      // Initialize exsurge context
+      this.ctxt = new exsurge.ChantContext();
+      this.ctxt.lyricTextFont = "'Crimson Text', serif";
+      this.ctxt.lyricTextSize *= 1.4;
+      this.ctxt.dropCapTextFont = this.ctxt.lyricTextFont;
+      this.ctxt.annotationTextFont = this.ctxt.lyricTextFont;
+      // Assign parameters
+      this.mappings = exsurge.Gabc.createMappingsFromSource(this.ctxt, gabc);
+      this.score = new exsurge.ChantScore(this.ctxt, this.mappings, true);
+      this.score.annotation = new exsurge.Annotation(this.ctxt, annotation);
+      this.sideText = sideText;
+      this.containerRef = containerRef;
+    }
+
+    renderChant = () => {
+      this.score.performLayoutAsync(this.ctxt, () => {
+        this.score.layoutChantLines(this.ctxt, this.containerRef.clientWidth, () => {
+          // render the score to svg code
+          this.containerRef.innerHTML = "{% marginnote 'gabc-translation-"+ this.containerRef.id +"' '" + this.sideText + "' %}" + this.score.createSvg(this.ctxt);
+        });
+      });
+    };
+  }
+
+  class GABCAnt extends GABC {
+    constructor(gabc, annotation, sideText, containerRef) {
+      super(gabc, annotation);
+      this.sideText = "<span class=\"rubrics\">Ant.</span> " + sideText;
+      this.containerRef = containerRef;
+    }
+  }
+
+  class GABCChapter extends GABC {
+    constructor(gabc, bibRef, annotation, sideText, containerRef) {
+      super(gabc, annotation);
+      this.sideText = "<em>" + bibRef + "</em><br/>" + sideText + "<br/><span class=\"rubrics\">℟.</span> Thanks be to God.";
+      this.containerRef = containerRef;
+    }
+  }
+
+  window.addEventListener('load', function() {
+    chants.push(
+      new GABC(
+        "{{ page.incipit }}",
+        "℣.",
+        "<span class=\"rubrics\">℣.</span> O God, <span class=\"rubrics\">✠</span> come to my assistance;<br/><span class=\"rubrics\">℟.</span> O Lord, make haste to help me.<br/>Glory be to the Father, and to the Son, * and to the Holy Ghost.<br/>As it was in the beginning, is now, * and ever shall be, world without end. Amen.<br/>Alleluia. </span>",
+        document.getElementById('incipit')
+      ),
+      new GABCAnt(
+        "{{ page.firstAnt }}",
+        "{{ page.firstAntAnotation }}",
+        "{{ page.firstAntEng }}",
+        document.getElementById('first-antiphon')
+      ),
+      new GABC(
+        "{{ page.firstPsalm }}",
+        "",
+        "{{ page.firstPsalmEng }}",
+        document.getElementById('first-psalm')
+      ),
+      new GABCAnt(
+        "{{ page.secondAnt }}",
+        "{{ page.secondAntAnotation }}",
+        "{{ page.secondAntEng }}",
+        document.getElementById('second-antiphon')
+      ),
+      new GABC(
+        "{{ page.secondPsalm }}",
+        "",
+        "{{ page.secondPsalmEng }}",
+        document.getElementById('second-psalm')
+      ),
+      new GABCAnt(
+        "{{ page.thirdAnt }}",
+        "{{ page.thirdAntAnotation }}",
+        "{{ page.thirdAntEng }}",
+        document.getElementById('third-antiphon')
+      ),
+      new GABC(
+        "{{ page.thirdPsalm }}",
+        "",
+        "{{ page.thirdPsalmEng }}",
+        document.getElementById('third-psalm')
+      ),
+      new GABCAnt(
+        "{{ page.fourthAnt }}",
+        "{{ page.fourthAntAnotation }}",
+        "{{ page.fourthAntEng }}",
+        document.getElementById('fourth-antiphon')
+      ),
+      new GABC(
+        "{{ page.fourthPsalm }}",
+        "",
+        "{{ page.fourthPsalmEng }}",
+        document.getElementById('fourth-psalm')
+      ),
+      new GABCAnt(
+        "{{ page.fifthAnt }}",
+        "{{ page.fifthAntAnotation }}",
+        "{{ page.fifthAntEng }}",
+        document.getElementById('fifth-antiphon')
+      ),
+      new GABC(
+        "{{ page.fifthPsalm }}",
+        "",
+        "{{ page.fifthPsalmEng }}",
+        document.getElementById('fifth-psalm')
+      ),
+      new GABCChapter(
+        "{{ page.chapter }}",
+        "{{ page.chapterBibRef}}",
+        "",
+        "{{ page.chapterEng }}",
+        document.getElementById('chapter')
+      ),
+      new GABC(
+        "{{ page.hymn }}",
+        "{{ page.hymnAnotation }}",
+        "{{ page.hymnEng }} <br/><br/> <span class='rubrics'>℣.</span> {{ page.hymnVerEng }}<br/><span class='rubrics'>℟.</span> {{ page.hymnResEng }}",
+        document.getElementById('hymn')
+      ),
+      new GABCAnt(
+        "{{ page.magnifAnt }}",
+        "{{ page.magnifAntAnotation }}",
+        "{{ page.magnifAntEng }}",
+        document.getElementById('magnificat-antiphon')
+      ),
+      new GABC(
+        "{{ page.magnificat }}",
+        "",
+        "{{ page.magnificatEng }}",
+        document.getElementById('magnificat')
+      ),
+      new GABC(
+        "(c4) Dó(g)mi(h)ne,(h) e(h)xáu(h)di(g) o(g)ra(g)ti(g)ó(g)nem(h) me(hg)am.(g.) (::Z) R/. Et(g) cla(h)mor(h) me(h)us(g) ad(g) te(g) vé(h)ni(h)at.(h.) (::)",
+        "",
+        "<span class='rubrics'>℣.</span> O Lord, hear my prayer.<br/><span class='rubrics'>℟.</span> And let my cry come unto thee.<br/><br/><strong>Let us pray.</strong><br/>{{ page.collectEng }}<br/><span class='rubrics'>℟.</span> Amen.",
+        document.getElementById('collect')
+      ),
+      new GABC(
+        "(c4) Dó(g)mi(h)ne,(h) e(h)xáu(h)di(g) o(g)ra(g)ti(g)ó(g)nem(h) me(hg)am.(g.) (::Z) R/. Et(g) cla(h)mor(h) me(h)us(g) ad(g) te(g) vé(h)ni(h)at.(h.) (::Z) V/. Be(f)ne(f)di(gh)cá(ixhg/ivHF'gffd!ewf)mus(f.) (,)Dó(ixf!gwhg/!ih)mi(gf)no.(f.) (::Z) R/. Dé(f!gh)o(ixvhg/ivHF'gffd!ewf.) (,) grá(ixf!gw!hg/ih)ti(gf)as.(f.) (::)",
+        "",
+        "<span class='rubrics'>℣.</span> O Lord, hear my prayer.<br/><span class='rubrics'>℟.</span> And let my cry come unto thee.<br/><span class='rubrics'>℣.</span> Let us bless the Lord.<br/><span class='rubrics'>℟.</span> Thanks be to God.<br/><span class='rubrics'>℣.</span> May the souls of the faithful, through the mercy of God, rest in peace.<br/><span class='rubrics'>℟.</span> Amen.",
+        document.getElementById('conclusio')
+      ),
+    );
+    gabcInit = true;
+    renderAllChants();
+  });
+
+  const renderAllChants = () => {
+    for (let i = 0; i< chants.length; i++) {
+      chants[i].renderChant();   
+    }
+  }
+
+  window.addEventListener('hresize', function() {
+    if (!gabcInit) return;
+    renderAllChants();
+  });
+
+  (function() {
+    const hResizeEvt = new Event('hresize');
+    let prevWidth = window.innerWidth;
+    window.addEventListener('resize', () => {
+      if (prevWidth !== window.innerWidth) {
+        prevWidth = window.innerWidth;
+        window.dispatchEvent(hResizeEvt);
+      }
+    });
+  })();
+</script>
