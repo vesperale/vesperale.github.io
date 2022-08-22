@@ -4,7 +4,7 @@ gabcfont: true
 ---
 <h1>{{ page.title}}</h1>
 <h3><em>{{ page.latinTitle}}</em></h3>
-<p class="subtitle">{{ page.date | date: "%B %-d, %Y" }}</p>
+<p class="subtitle">{{ page.eventDate | date: "%B %-d, %Y" }}</p>
 
 
 <h2>Incipit</h2>
@@ -273,10 +273,12 @@ gabcfont: true
   (function() {
     const hResizeEvt = new Event('hresize');
     let prevWidth = window.innerWidth;
+    let resizeTimer;
     window.addEventListener('resize', () => {
       if (prevWidth !== window.innerWidth) {
+        clearTimeout(resizeTimer);
         prevWidth = window.innerWidth;
-        window.dispatchEvent(hResizeEvt);
+        resizeTimer = setTimeout(() => window.dispatchEvent(hResizeEvt), 100);
       }
     });
   })();
